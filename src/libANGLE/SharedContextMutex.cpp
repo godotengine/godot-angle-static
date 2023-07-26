@@ -125,7 +125,7 @@ void SharedContextMutex<Mutex>::unlock()
 }
 
 template <class Mutex>
-ANGLE_INLINE SharedContextMutex<Mutex> *SharedContextMutex<Mutex>::doTryLock()
+SharedContextMutex<Mutex> *SharedContextMutex<Mutex>::doTryLock()
 {
     angle::ThreadId currentThreadId;
     ASSERT(!CheckThreadIdCurrent(mOwnerThreadId, &currentThreadId));
@@ -147,7 +147,7 @@ ANGLE_INLINE SharedContextMutex<Mutex> *SharedContextMutex<Mutex>::doTryLock()
 }
 
 template <class Mutex>
-ANGLE_INLINE SharedContextMutex<Mutex> *SharedContextMutex<Mutex>::doLock()
+SharedContextMutex<Mutex> *SharedContextMutex<Mutex>::doLock()
 {
     angle::ThreadId currentThreadId;
     ASSERT(!CheckThreadIdCurrent(mOwnerThreadId, &currentThreadId));
@@ -166,7 +166,7 @@ ANGLE_INLINE SharedContextMutex<Mutex> *SharedContextMutex<Mutex>::doLock()
 }
 
 template <class Mutex>
-ANGLE_INLINE void SharedContextMutex<Mutex>::doUnlock()
+void SharedContextMutex<Mutex>::doUnlock()
 {
     ASSERT(
         TryUpdateThreadId(&mOwnerThreadId, angle::GetCurrentThreadId(), angle::InvalidThreadId()));
