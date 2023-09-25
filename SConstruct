@@ -730,7 +730,7 @@ else:
 if env["platform"] == "macos":
     env.Append(CPPDEFINES=[("ANGLE_IS_MAC", 1)])
     env.Append(CPPDEFINES=[("ANGLE_ENABLE_METAL", 1)])
-    env.Append(CCFLAGS=["-fno-objc-arc"])
+    env.Append(CCFLAGS=["-fno-objc-arc", "-fno-objc-msgsend-selector-stubs"])
 if env["platform"] == "windows":
     env.Append(CPPDEFINES=[("ANGLE_IS_WIN", 1)])
     env.Append(
@@ -765,6 +765,17 @@ env.Prepend(CPPPATH=["src/third_party/khronos"])
 env.Prepend(CPPPATH=["third_party/astc-encoder/src/Source"])
 env.Prepend(CPPPATH=["third_party/zlib"])
 env.Prepend(CPPPATH=["third_party/zlib/google"])
+
+env.Append(CPPDEFINES=[("USE_AURA", 1)])
+
+env.Append(CPPDEFINES=[("_HAS_EXCEPTIONS", "0")])
+env.Append(CPPDEFINES=[("NDEBUG", 1)])
+env.Append(CPPDEFINES=[("NVALGRIND", 1)])
+env.Append(CPPDEFINES=[("DYNAMIC_ANNOTATIONS_ENABLED", 0)])
+env.Append(CPPDEFINES=[("ANGLE_VMA_VERSION", 3000000)])
+env.Append(CPPDEFINES=[("ANGLE_ENABLE_SHARE_CONTEXT_LOCK", 1)])
+env.Append(CPPDEFINES=[("ANGLE_ENABLE_CONTEXT_MUTEX", 1)])
+env.Append(CPPDEFINES=[("ANGLE_OUTSIDE_WEBKIT", 1)])
 
 env_egl = env.Clone()
 env_gles = env.Clone()
