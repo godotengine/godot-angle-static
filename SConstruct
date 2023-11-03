@@ -599,6 +599,43 @@ if env["platform"] == "macos":
         "src/libANGLE/renderer/metal/mtl_utils.mm",
         "src/libANGLE/renderer/metal/process.cpp",
         "src/libANGLE/renderer/metal/renderermtl_utils.cpp",
+        "src/libANGLE/renderer/gl/BlitGL.cpp",
+        "src/libANGLE/renderer/gl/DisplayGL.cpp",
+        "src/libANGLE/renderer/gl/MemoryObjectGL.cpp",
+        "src/libANGLE/renderer/gl/RendererGL.cpp",
+        "src/libANGLE/renderer/gl/SyncGL.cpp",
+        "src/libANGLE/renderer/gl/renderergl_utils.cpp",
+        "src/libANGLE/renderer/gl/BufferGL.cpp",
+        "src/libANGLE/renderer/gl/PLSProgramCache.cpp",
+        "src/libANGLE/renderer/gl/SamplerGL.cpp",
+        "src/libANGLE/renderer/gl/TextureGL.cpp",
+        "src/libANGLE/renderer/gl/ClearMultiviewGL.cpp",
+        "src/libANGLE/renderer/gl/FenceNVGL.cpp",
+        "src/libANGLE/renderer/gl/ProgramGL.cpp",
+        "src/libANGLE/renderer/gl/SemaphoreGL.cpp",
+        "src/libANGLE/renderer/gl/TransformFeedbackGL.cpp",
+        "src/libANGLE/renderer/gl/CompilerGL.cpp",
+        "src/libANGLE/renderer/gl/FramebufferGL.cpp",
+        "src/libANGLE/renderer/gl/ProgramPipelineGL.cpp",
+        "src/libANGLE/renderer/gl/ShaderGL.cpp",
+        "src/libANGLE/renderer/gl/VertexArrayGL.cpp",
+        "src/libANGLE/renderer/gl/ContextGL.cpp",
+        "src/libANGLE/renderer/gl/FunctionsGL.cpp",
+        "src/libANGLE/renderer/gl/QueryGL.cpp",
+        "src/libANGLE/renderer/gl/StateManagerGL.cpp",
+        "src/libANGLE/renderer/gl/formatutilsgl.cpp",
+        "src/libANGLE/renderer/gl/DispatchTableGL_autogen.cpp",
+        "src/libANGLE/renderer/gl/ImageGL.cpp",
+        "src/libANGLE/renderer/gl/RenderbufferGL.cpp",
+        "src/libANGLE/renderer/gl/SurfaceGL.cpp",
+        "src/libANGLE/renderer/gl/null_functions.cpp",
+        "src/libANGLE/renderer/gl/cgl/ContextCGL.cpp",
+        "src/libANGLE/renderer/gl/cgl/DisplayCGL.mm",
+        "src/libANGLE/renderer/gl/cgl/DeviceCGL.cpp",
+        "src/libANGLE/renderer/gl/cgl/IOSurfaceSurfaceCGL.cpp",
+        "src/libANGLE/renderer/gl/cgl/PbufferSurfaceCGL.cpp",
+        "src/libANGLE/renderer/gl/cgl/RendererCGL.cpp",
+        "src/libANGLE/renderer/gl/cgl/WindowSurfaceCGL.mm",
     ]
 if env["platform"] == "windows":
     angle_sources += [
@@ -730,7 +767,11 @@ else:
 if env["platform"] == "macos":
     env.Append(CPPDEFINES=[("ANGLE_IS_MAC", 1)])
     env.Append(CPPDEFINES=[("ANGLE_ENABLE_METAL", 1)])
-    env.Append(CCFLAGS=["-fno-objc-arc", "-fno-objc-msgsend-selector-stubs"])
+    env.Append(CPPDEFINES=[("ANGLE_ENABLE_OPENGL", 1)])
+    env.Append(CPPDEFINES=[("ANGLE_ENABLE_GL_DESKTOP_BACKEND", 1)])
+    env.Append(CPPDEFINES=[("ANGLE_ENABLE_GL_NULL", 1)])
+    env.Append(CPPDEFINES=[("ANGLE_ENABLE_CGL", 1)])
+    env.Append(CCFLAGS=["-fno-objc-arc", "-fno-objc-msgsend-selector-stubs", "-Wno-unused-command-line-argument"])
 if env["platform"] == "windows":
     env.Append(CPPDEFINES=[("ANGLE_IS_WIN", 1)])
     env.Append(
