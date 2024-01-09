@@ -67,7 +67,7 @@ if profile:
         customs.append(profile + ".py")
 opts = Variables(customs, ARGUMENTS)
 
-platforms = ("macos", "windows")
+platforms = ("macos", "ios", "windows")
 opts.Add(
     EnumVariable(
         key="platform",
@@ -512,11 +512,37 @@ angle_sources = [
 ]
 if env["platform"] == "macos":
     angle_sources += [
-        "src/common/apple_platform_utils.mm",
         "src/common/system_utils_apple.cpp",
-        "src/common/system_utils_posix.cpp",
         "src/common/system_utils_mac.cpp",
+        "src/gpu_info_util/SystemInfo_macos.mm",
+        "src/libANGLE/renderer/driver_utils_mac.mm",
         "src/common/gl/cgl/FunctionsCGL.cpp",
+        "src/libANGLE/renderer/gl/cgl/ContextCGL.cpp",
+        "src/libANGLE/renderer/gl/cgl/DisplayCGL.mm",
+        "src/libANGLE/renderer/gl/cgl/DeviceCGL.cpp",
+        "src/libANGLE/renderer/gl/cgl/IOSurfaceSurfaceCGL.cpp",
+        "src/libANGLE/renderer/gl/cgl/PbufferSurfaceCGL.cpp",
+        "src/libANGLE/renderer/gl/cgl/RendererCGL.cpp",
+        "src/libANGLE/renderer/gl/cgl/WindowSurfaceCGL.mm",
+    ]
+if env["platform"] == "ios":
+    angle_sources += [
+        "src/common/system_utils_ios.mm",
+        "src/gpu_info_util/SystemInfo_ios.cpp",
+        "src/libANGLE/renderer/driver_utils_ios.mm",
+        "src/libANGLE/renderer/gl/eagl/ContextEAGL.cpp",
+        "src/libANGLE/renderer/gl/eagl/DeviceEAGL.cpp",
+        "src/libANGLE/renderer/gl/eagl/DisplayEAGL.mm",
+        "src/libANGLE/renderer/gl/eagl/FunctionsEAGL.mm",
+        "src/libANGLE/renderer/gl/eagl/IOSurfaceSurfaceEAGL.mm",
+        "src/libANGLE/renderer/gl/eagl/PbufferSurfaceEAGL.cpp",
+        "src/libANGLE/renderer/gl/eagl/RendererEAGL.cpp",
+        "src/libANGLE/renderer/gl/eagl/WindowSurfaceEAGL.mm",
+    ]
+if env["platform"] == "macos" or env["platform"] == "ios":
+    angle_sources += [
+        "src/common/apple_platform_utils.mm",
+        "src/common/system_utils_posix.cpp",
         "src/compiler/translator/msl/AstHelpers.cpp",
         "src/compiler/translator/msl/ConstantNames.cpp",
         "src/compiler/translator/msl/DiscoverDependentFunctions.cpp",
@@ -559,8 +585,6 @@ if env["platform"] == "macos":
         "src/compiler/translator/tree_ops/msl/TransposeRowMajorMatrices.cpp",
         "src/compiler/translator/tree_ops/msl/WrapMain.cpp",
         "src/gpu_info_util/SystemInfo_apple.mm",
-        "src/gpu_info_util/SystemInfo_macos.mm",
-        "src/libANGLE/renderer/driver_utils_mac.mm",
         "src/libANGLE/renderer/metal/BufferMtl.mm",
         "src/libANGLE/renderer/metal/CompilerMtl.mm",
         "src/libANGLE/renderer/metal/ContextMtl.mm",
@@ -629,13 +653,6 @@ if env["platform"] == "macos":
         "src/libANGLE/renderer/gl/RenderbufferGL.cpp",
         "src/libANGLE/renderer/gl/SurfaceGL.cpp",
         "src/libANGLE/renderer/gl/null_functions.cpp",
-        "src/libANGLE/renderer/gl/cgl/ContextCGL.cpp",
-        "src/libANGLE/renderer/gl/cgl/DisplayCGL.mm",
-        "src/libANGLE/renderer/gl/cgl/DeviceCGL.cpp",
-        "src/libANGLE/renderer/gl/cgl/IOSurfaceSurfaceCGL.cpp",
-        "src/libANGLE/renderer/gl/cgl/PbufferSurfaceCGL.cpp",
-        "src/libANGLE/renderer/gl/cgl/RendererCGL.cpp",
-        "src/libANGLE/renderer/gl/cgl/WindowSurfaceCGL.mm",
     ]
 if env["platform"] == "windows":
     angle_sources += [
@@ -760,11 +777,16 @@ env.Append(CPPDEFINES=[("ANGLE_CAPTURE_ENABLED", 0)])
 env.Append(CPPDEFINES=[("ANGLE_ENABLE_ESSL", 1)])
 env.Append(CPPDEFINES=[("ANGLE_ENABLE_GLSL", 1)])
 env.Append(CPPDEFINES=[("ANGLE_EXPORT", '""')])
+
+extra_suffix = ""
+
 if env["arch"] in ["x86_64", "arm64"]:
     env.Append(CPPDEFINES=[("ANGLE_IS_64_BIT_CPU", 1)])
 else:
     env.Append(CPPDEFINES=[("ANGLE_IS_32_BIT_CPU", 1)])
+
 if env["platform"] == "macos":
+    env.Append(CPPDEFINES=["ANGLE_PLATFORM_MACOS"])
     env.Append(CPPDEFINES=[("ANGLE_IS_MAC", 1)])
     env.Append(CPPDEFINES=[("ANGLE_ENABLE_METAL", 1)])
     env.Append(CPPDEFINES=[("ANGLE_ENABLE_OPENGL", 1)])
@@ -772,6 +794,20 @@ if env["platform"] == "macos":
     env.Append(CPPDEFINES=[("ANGLE_ENABLE_GL_NULL", 1)])
     env.Append(CPPDEFINES=[("ANGLE_ENABLE_CGL", 1)])
     env.Append(CCFLAGS=["-fno-objc-arc", "-fno-objc-msgsend-selector-stubs", "-Wno-unused-command-line-argument"])
+
+if env["platform"] == "ios":
+    if env["ios_simulator"]:
+        env.Append(CPPDEFINES=["ANGLE_PLATFORM_IOS_FAMILY"])
+        extra_suffix = ".simulator" + extra_suffix
+    else:
+        env.Append(CPPDEFINES=["ANGLE_PLATFORM_IOS_FAMILY_SIMULATOR"])
+    env.Append(CPPDEFINES=[("ANGLE_ENABLE_METAL", 1)])
+    env.Append(CPPDEFINES=[("ANGLE_ENABLE_OPENGL", 1)])
+    env.Append(CPPDEFINES=[("ANGLE_ENABLE_GL_NULL", 1)])
+    env.Append(CPPDEFINES=[("ANGLE_ENABLE_EAGL", 1)])
+    env.Append(CPPDEFINES=[("GLES_SILENCE_DEPRECATION", 1)])
+    env.Append(CCFLAGS=["-fno-objc-arc", "-fno-objc-msgsend-selector-stubs", "-Wno-unused-command-line-argument"])
+
 if env["platform"] == "windows":
     env.Append(CPPDEFINES=[("ANGLE_IS_WIN", 1)])
     env.Append(
@@ -833,7 +869,7 @@ env_gles.Append(CPPDEFINES=[("LIBGLESV2_IMPLEMENTATION", 1)])
 env_gles.Append(CPPDEFINES=[("EGL_EGL_PROTOTYPES", 0)])
 env_gles.Append(CPPDEFINES=[("GL_GLES_PROTOTYPES", 0)])
 
-suffix = ".{}.{}".format(env["platform"], env["arch"])
+suffix = ".{}.{}".format(env["platform"], env["arch"]) + extra_suffix
 
 # Expose it when included from another project
 env["suffix"] = suffix

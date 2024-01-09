@@ -101,7 +101,7 @@ static inline gl::PrimitiveMode getNewPrimitiveMode(const uint fixIndexBufferKey
 }
 ProvokingVertexHelper::ProvokingVertexHelper(ContextMtl *context) : mIndexBuffers(false)
 {
-    mIndexBuffers.initialize(context, kInitialIndexBufferSize, mtl::kIndexBufferOffsetAlignment, 0);
+    mIndexBuffers.initialize(context, kInitialIndexBufferSize, mtl::kIndexBufferOffsetAlignment, 10);
 }
 
 void ProvokingVertexHelper::onDestroy(ContextMtl *context)

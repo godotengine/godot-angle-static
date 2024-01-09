@@ -118,14 +118,14 @@ MTLStorageMode BufferPool::storageMode(ContextMtl *contextMtl) const
 
 angle::Result BufferPool::allocateNewBuffer(ContextMtl *contextMtl)
 {
-    if (mMaxBuffers > 0 && mBuffersAllocated >= mMaxBuffers)
+    if ((mMaxBuffers > 0 && mBuffersAllocated >= mMaxBuffers))
     {
         // We reach the max number of buffers allowed.
         // Try to deallocate old and smaller size inflight buffers.
         releaseInFlightBuffers(contextMtl);
     }
 
-    if (mMaxBuffers > 0 && mBuffersAllocated >= mMaxBuffers)
+    if ((mMaxBuffers > 0 && mBuffersAllocated >= mMaxBuffers))
     {
         // If we reach this point, it means there was no buffer deallocated inside
         // releaseInFlightBuffers() thus, the number of buffers allocated still exceeds number

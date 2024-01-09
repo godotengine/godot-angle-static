@@ -350,7 +350,7 @@ void InitArgumentBufferEncoder(mtl::Context *context,
     if (encoder->metalArgBufferEncoder)
     {
         encoder->bufferPool.initialize(context, encoder->metalArgBufferEncoder.get().encodedLength,
-                                       mtl::kArgumentBufferOffsetAlignment, 0);
+                                       mtl::kArgumentBufferOffsetAlignment, 10);
     }
 }
 

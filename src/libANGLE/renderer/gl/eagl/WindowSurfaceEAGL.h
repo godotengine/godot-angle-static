@@ -26,6 +26,7 @@ typedef __IOSurface *IOSurfaceRef;
 #if defined(PREFIX_OBJECTIVE_C_CLASSES_WITH_WEB_FOR_WEBKIT)
 #    define SwapLayerEAGL WebSwapLayerEAGL
 #endif
+#define SwapLayerEAGL GodotSwapLayerEAGL
 @class SwapLayerEAGL;
 
 namespace rx

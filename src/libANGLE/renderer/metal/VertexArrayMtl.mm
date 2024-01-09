@@ -198,7 +198,7 @@ VertexArrayMtl::VertexArrayMtl(const gl::VertexArrayState &state, ContextMtl *co
                                   /** maxBuffers */ 10 * mtl::kMaxVertexAttribs);
 
     mDynamicIndexData.initialize(context, kDynamicIndexDataSize, mtl::kIndexBufferOffsetAlignment,
-                                 0);
+                                 10);
 }
 VertexArrayMtl::~VertexArrayMtl() {}
 
