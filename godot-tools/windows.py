@@ -63,10 +63,18 @@ def generate(env):
     else:
         env["use_mingw"] = True
         # Cross-compilation using MinGW
-        prefix = "i686" if env["arch"] == "x86_32" else env["arch"]
+        if env["arch"] == "x86_64":
+            prefix = "x86_64"
+        elif env["arch"] == "arm64":
+            prefix = "aarch64"
+        elif env["arch"] == "arm32":
+            prefix = "armv7"
+        elif env["arch"] == "x86_32":
+            prefix = "i686"
+
         if env["use_llvm"]:
-            env["CXX"] = prefix + "-w64-mingw32-clang"
-            env["CC"] = prefix + "-w64-mingw32-clang++"
+            env["CXX"] = prefix + "-w64-mingw32-clang++"
+            env["CC"] = prefix + "-w64-mingw32-clang"
             env["AR"] = prefix + "-w64-mingw32-ar"
             env["RANLIB"] = prefix + "-w64-mingw32-ranlib"
             env["LINK"] = prefix + "-w64-mingw32-clang"
