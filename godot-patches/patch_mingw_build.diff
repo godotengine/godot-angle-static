@@ -1,7 +1,7 @@
-diff --git a/include/platform/PlatformMethods.h b/include/platform/PlatformMethods.h
+diff --git a/angle/include/platform/PlatformMethods.h b/angle/include/platform/PlatformMethods.h
 index a3233a2cd5..b4e684842c 100644
---- a/include/platform/PlatformMethods.h
-+++ b/include/platform/PlatformMethods.h
+--- a/angle/include/platform/PlatformMethods.h
++++ b/angle/include/platform/PlatformMethods.h
 @@ -313,7 +313,7 @@ extern "C" {
  // The application should set any platform methods it cares about on the returned pointer.
  // If display is not valid, behaviour is undefined.
@@ -20,41 +20,10 @@ index a3233a2cd5..b4e684842c 100644
  }  // extern "C"
  
  namespace angle
-diff --git a/src/libANGLE/SharedContextMutex.cpp b/src/libANGLE/SharedContextMutex.cpp
-index 352a6781b2..714d01c51a 100644
---- a/src/libANGLE/SharedContextMutex.cpp
-+++ b/src/libANGLE/SharedContextMutex.cpp
-@@ -125,7 +125,7 @@ void SharedContextMutex<Mutex>::unlock()
- }
- 
- template <class Mutex>
--ANGLE_INLINE SharedContextMutex<Mutex> *SharedContextMutex<Mutex>::doTryLock()
-+SharedContextMutex<Mutex> *SharedContextMutex<Mutex>::doTryLock()
- {
-     angle::ThreadId currentThreadId;
-     ASSERT(!CheckThreadIdCurrent(mOwnerThreadId, &currentThreadId));
-@@ -147,7 +147,7 @@ ANGLE_INLINE SharedContextMutex<Mutex> *SharedContextMutex<Mutex>::doTryLock()
- }
- 
- template <class Mutex>
--ANGLE_INLINE SharedContextMutex<Mutex> *SharedContextMutex<Mutex>::doLock()
-+SharedContextMutex<Mutex> *SharedContextMutex<Mutex>::doLock()
- {
-     angle::ThreadId currentThreadId;
-     ASSERT(!CheckThreadIdCurrent(mOwnerThreadId, &currentThreadId));
-@@ -166,7 +166,7 @@ ANGLE_INLINE SharedContextMutex<Mutex> *SharedContextMutex<Mutex>::doLock()
- }
- 
- template <class Mutex>
--ANGLE_INLINE void SharedContextMutex<Mutex>::doUnlock()
-+void SharedContextMutex<Mutex>::doUnlock()
- {
-     ASSERT(
-         TryUpdateThreadId(&mOwnerThreadId, angle::GetCurrentThreadId(), angle::InvalidThreadId()));
-diff --git a/src/libANGLE/renderer/d3d/d3d11/converged/CompositorNativeWindow11.cpp b/src/libANGLE/renderer/d3d/d3d11/converged/CompositorNativeWindow11.cpp
+diff --git a/angle/src/libANGLE/renderer/d3d/d3d11/converged/CompositorNativeWindow11.cpp b/angle/src/libANGLE/renderer/d3d/d3d11/converged/CompositorNativeWindow11.cpp
 index 0e64f78d53..17ed63e66c 100644
---- a/src/libANGLE/renderer/d3d/d3d11/converged/CompositorNativeWindow11.cpp
-+++ b/src/libANGLE/renderer/d3d/d3d11/converged/CompositorNativeWindow11.cpp
+--- a/angle/src/libANGLE/renderer/d3d/d3d11/converged/CompositorNativeWindow11.cpp
++++ b/angle/src/libANGLE/renderer/d3d/d3d11/converged/CompositorNativeWindow11.cpp
 @@ -38,14 +38,22 @@ bool CompositorNativeWindow11::getClientRect(LPRECT rect) const
      mHostVisual.As(&visual);
  
@@ -78,10 +47,10 @@ index 0e64f78d53..17ed63e66c 100644
      if (FAILED(hr))
      {
          return false;
-diff --git a/src/libANGLE/renderer/d3d/d3d11/converged/CompositorNativeWindow11.h b/src/libANGLE/renderer/d3d/d3d11/converged/CompositorNativeWindow11.h
+diff --git a/angle/src/libANGLE/renderer/d3d/d3d11/converged/CompositorNativeWindow11.h b/angle/src/libANGLE/renderer/d3d/d3d11/converged/CompositorNativeWindow11.h
 index aec331a76c..be98814486 100644
---- a/src/libANGLE/renderer/d3d/d3d11/converged/CompositorNativeWindow11.h
-+++ b/src/libANGLE/renderer/d3d/d3d11/converged/CompositorNativeWindow11.h
+--- a/angle/src/libANGLE/renderer/d3d/d3d11/converged/CompositorNativeWindow11.h
++++ b/angle/src/libANGLE/renderer/d3d/d3d11/converged/CompositorNativeWindow11.h
 @@ -12,6 +12,143 @@
  
  #include "libANGLE/renderer/d3d/d3d11/NativeWindow11.h"
@@ -235,6 +204,7 @@ index 64e0428..1332971 100644
  #if defined(_MSC_VER)
  #include <intrin.h>
 -#elif defined(ADLER32_SIMD_SSSE3)
-+#elif defined(ADLER32_SIMD_SSSE3) || (defined(__clang__) && (defined(__i386__) || defined(__x86_64__)))
++#elif defined(ADLER32_SIMD_SSSE3) || (defined(MINGW_ENABLED) && (defined(__i386__) || defined(__x86_64__)))
  #include <cpuid.h>
  #endif
+ 
