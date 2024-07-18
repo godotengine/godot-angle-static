@@ -226,3 +226,15 @@ index aec331a76c..be98814486 100644
  #include <dispatcherqueue.h>
  #include <windows.foundation.metadata.h>
  #include <windows.ui.composition.h>
+diff --git a/third_party/zlib/cpu_features.c b/third_party/zlib/cpu_features.c
+index 64e0428..1332971 100644
+--- a/third_party/zlib/cpu_features.c
++++ b/third_party/zlib/cpu_features.c
+@@ -11,7 +11,7 @@
+ #include <stdint.h>
+ #if defined(_MSC_VER)
+ #include <intrin.h>
+-#elif defined(ADLER32_SIMD_SSSE3)
++#elif defined(ADLER32_SIMD_SSSE3) || (defined(__clang__) && (defined(__i386__) || defined(__x86_64__)))
+ #include <cpuid.h>
+ #endif
