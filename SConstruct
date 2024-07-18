@@ -3,8 +3,6 @@
 import os
 import platform
 import sys
-import subprocess
-from SCons.Errors import UserError
 
 EnsureSConsVersion(4, 0)
 
