@@ -1,0 +1,12 @@
+diff --git a/angle/src/libANGLE/renderer/gl/eagl/WindowSurfaceEAGL.h b/angle/src/libANGLE/renderer/gl/eagl/WindowSurfaceEAGL.h
+index d482fd928..58ed2c9e5 100644
+--- a/angle/src/libANGLE/renderer/gl/eagl/WindowSurfaceEAGL.h
++++ b/angle/src/libANGLE/renderer/gl/eagl/WindowSurfaceEAGL.h
+@@ -26,6 +26,7 @@ typedef __IOSurface *IOSurfaceRef;
+ #if defined(PREFIX_OBJECTIVE_C_CLASSES_WITH_WEB_FOR_WEBKIT)
+ #    define SwapLayerEAGL WebSwapLayerEAGL
+ #endif
++#define SwapLayerEAGL GodotSwapLayerEAGL
+ @class SwapLayerEAGL;
+ 
+ namespace rx

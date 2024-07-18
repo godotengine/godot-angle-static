@@ -1,3 +1,7 @@
+[submodule "angle"]
+	path = angle
+	url = https://chromium.googlesource.com/angle/angle
+	branch = chromium/6601
 [submodule "third_party/astc-encoder/src"]
 	path = third_party/astc-encoder/src
 	url = https://chromium.googlesource.com/external/github.com/ARM-software/astc-encoder

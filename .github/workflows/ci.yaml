@@ -1,0 +1,253 @@
+name: Godot ANGLE static libs
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: ${{ matrix.name }}
+    strategy:
+      matrix:
+        include:
+        # macOS and iOS
+        - name: 🍎 macOS x86_64
+          platform: macos
+          os: macos-13
+          xcode: "15.0"
+          artifact-name: godot-angle-static-x86_64-macos-release
+          artifact-path-angle: bin/libANGLE.macos.x86_64.a
+          artifact-path-egl: bin/libEGL.macos.x86_64.a
+          artifact-path-gles: bin/libGLES.macos.x86_64.a
+          flags: arch=x86_64
+
+        - name: 🍎 macOS arm64
+          platform: macos
+          os: macos-13
+          xcode: "15.0"
+          artifact-name: godot-angle-static-arm64-macos-release
+          artifact-path-angle: bin/libANGLE.macos.arm64.a
+          artifact-path-egl: bin/libEGL.macos.arm64.a
+          artifact-path-gles: bin/libGLES.macos.arm64.a
+          flags: arch=arm64
+
+        - name: 🍏 iOS x86_64 simulator
+          platform: ios
+          os: macos-13
+          xcode: "15.0"
+          artifact-name: godot-angle-static-x86_64-ios-sim-release
+          artifact-path-angle: bin/libANGLE.ios.x86_64.simulator.a
+          artifact-path-egl: bin/libEGL.ios.x86_64.simulator.a
+          artifact-path-gles: bin/libGLES.ios.x86_64.simulator.a
+          flags: arch=x86_64 ios_simulator=yes
+
+        - name: 🍏 iOS arm64 simulator
+          platform: ios
+          os: macos-13
+          xcode: "15.0"
+          artifact-name: godot-angle-static-arm64-ios-sim-release
+          artifact-path-angle: bin/libANGLE.ios.arm64.simulator.a
+          artifact-path-egl: bin/libEGL.ios.arm64.simulator.a
+          artifact-path-gles: bin/libGLES.ios.arm64.simulator.a
+          flags: arch=arm64 ios_simulator=yes
+
+        - name: 🍏 iOS arm64 device
+          platform: ios
+          os: macos-13
+          xcode: "15.0"
+          artifact-name: godot-angle-static-arm64-ios-release
+          artifact-path-angle: bin/libANGLE.ios.arm64.a
+          artifact-path-egl: bin/libEGL.ios.arm64.a
+          artifact-path-gles: bin/libGLES.ios.arm64.a
+          flags: arch=arm64
+
+        # MinGW/LLVM libs using UCRT
+        - name: 🏁 Windows - MinGW/LLVM (UCRT) x86_64
+          platform: windows
+          os: windows-2019
+          artifact-name: godot-angle-static-x86_64-llvm-release
+          artifact-path-angle: bin/libANGLE.windows.x86_64.a
+          artifact-path-egl: bin/libEGL.windows.x86_64.a
+          artifact-path-gles: bin/libGLES.windows.x86_64.a
+          flags: use_mingw=yes arch=x86_64 use_llvm=yes mingw_prefix=$HOME/llvm-mingw
+          llvm: yes
+
+        - name: 🏁 Windows - MinGW/LLVM (UCRT) x86_32
+          platform: windows
+          os: windows-2019
+          artifact-name: godot-angle-static-x86_32-llvm-release
+          artifact-path-angle: bin/libANGLE.windows.x86_32.a
+          artifact-path-egl: bin/libEGL.windows.x86_32.a
+          artifact-path-gles: bin/libGLES.windows.x86_32.a
+          flags: use_mingw=yes arch=x86_32 use_llvm=yes mingw_prefix=$HOME/llvm-mingw
+          llvm: yes
+
+        - name: 🏁 Windows - MinGW/LLVM (UCRT) arm64
+          platform: windows
+          os: windows-2019
+          artifact-name: godot-angle-static-arm64-llvm-release
+          artifact-path-angle: bin/libANGLE.windows.arm64.a
+          artifact-path-egl: bin/libEGL.windows.arm64.a
+          artifact-path-gles: bin/libGLES.windows.arm64.a
+          flags: use_mingw=yes arch=arm64 use_llvm=yes mingw_prefix=$HOME/llvm-mingw
+          llvm: yes
+
+        # MSVC libs
+        - name: 🏁 Windows - MSVC x86_64
+          platform: windows
+          os: windows-2019
+          artifact-name: godot-angle-static-x86_64-msvc-release
+          artifact-path-angle: bin/libANGLE.windows.x86_64.lib
+          artifact-path-egl: bin/libEGL.windows.x86_64.lib
+          artifact-path-gles: bin/libGLES.windows.x86_64.lib
+          flags: use_mingw=no arch=x86_64
+
+        - name: 🏁 Windows - MSVC x86_32
+          platform: windows
+          os: windows-2019
+          artifact-name: godot-angle-static-x86_32-msvc-release
+          artifact-path-angle: bin/libANGLE.windows.x86_32.lib
+          artifact-path-egl: bin/libEGL.windows.x86_32.lib
+          artifact-path-gles: bin/libGLES.windows.x86_32.lib
+          flags: use_mingw=no arch=x86_32
+
+        - name: 🏁 Windows - MSVC arm64
+          platform: windows
+          os: windows-2019
+          artifact-name: godot-angle-static-arm64-msvc-release
+          artifact-path-angle: bin/libANGLE.windows.arm64.lib
+          artifact-path-egl: bin/libEGL.windows.arm64.lib
+          artifact-path-gles: bin/libGLES.windows.arm64.lib
+          flags: use_mingw=no arch=arm64
+
+        - name: 🏁 Windows - MSVC arm32
+          platform: windows
+          os: windows-2019
+          artifact-name: godot-angle-static-arm32-msvc-release
+          artifact-path-angle: bin/libANGLE.windows.arm32.lib
+          artifact-path-egl: bin/libEGL.windows.arm32.lib
+          artifact-path-gles: bin/libGLES.windows.arm32.lib
+          flags: use_mingw=no arch=arm32
+
+        # MinGW/GCC libs using MSVCRT
+        - name: 🏁 Windows - MinGW/GCC (MSVCRT) x86_64
+          platform: windows
+          os: windows-2019
+          artifact-name: godot-angle-static-x86_64-gcc-release
+          artifact-path-angle: bin/libANGLE.windows.x86_64.a
+          artifact-path-egl: bin/libEGL.windows.x86_64.a
+          artifact-path-gles: bin/libGLES.windows.x86_64.a
+          flags: use_mingw=yes arch=x86_64
+          mingw: yes
+          msys: mingw64
+          msysenv: x86_64
+
+        - name: 🏁 Windows - MinGW/GCC (MSVCRT) x86_32
+          platform: windows
+          os: windows-2019
+          artifact-name: godot-angle-static-x86_32-gcc-release
+          artifact-path-angle: bin/libANGLE.windows.x86_32.a
+          artifact-path-egl: bin/libEGL.windows.x86_32.a
+          artifact-path-gles: bin/libGLES.windows.x86_32.a
+          flags: use_mingw=yes arch=x86_32
+          mingw: yes
+          msys: mingw32
+          msysenv: i686
+
+    runs-on: ${{ matrix.os }}
+
+    env:
+      XCODE_DEV_PATH: "/Applications/Xcode_${{ matrix.xcode }}.app/Contents/Developer"
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: 'true'
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Select Xcode version
+        if: ${{ matrix.platform == 'macos' || matrix.platform == 'ios' }}
+        run: sudo xcode-select -switch "${XCODE_DEV_PATH}"
+
+      - name: Install SCons (Native env)
+        if: ${{ matrix.mingw != 'yes' }}
+        run: |
+          python -m pip install scons==4.0.0
+
+      - name: Install mako
+        run: |
+          python -m pip install mako
+
+      - name: Setup MinGW/LLVM
+        if: ${{ matrix.platform == 'windows' && matrix.llvm == 'yes' }}
+        run: |
+          curl -L -O https://github.com/mstorsjo/llvm-mingw/releases/download/20240619/llvm-mingw-20240619-ucrt-x86_64.zip
+          unzip -q llvm-mingw-*.zip
+          rm llvm-mingw-*.zip
+          mv llvm-mingw-* "$HOME/llvm-mingw"
+          echo "$HOME/llvm-mingw/bin" >> $GITHUB_PATH
+
+      - name: Setup MinGW/MSYS2
+        if: ${{ matrix.mingw == 'yes' }}
+        uses: msys2/setup-msys2@v2
+        with:
+          update: true
+          msystem: ${{matrix.msys}}
+          install: mingw-w64-${{matrix.msysenv}}-gcc mingw-w64-${{matrix.msysenv}}-scons
+
+      - name: Prepare ANGLE source
+        shell: bash
+        run: |
+          ./update_angle.sh
+
+      - name: Build ANGLE (Native env)
+        if: ${{ matrix.mingw != 'yes' }}
+        run: |
+          scons platform=${{ matrix.platform }} ${{ matrix.flags }} optimize=speed
+
+      - name: Build ANGLE (MSYS2 env)
+        if: ${{ matrix.mingw == 'yes' }}
+        shell: msys2 {0}
+        run: |
+          scons platform=${{ matrix.platform }} ${{ matrix.flags }} optimize=speed
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact-name }}
+          path: |
+            ${{ matrix.artifact-path-angle }}
+            ${{ matrix.artifact-path-egl }}
+            ${{ matrix.artifact-path-gles }}
+          if-no-files-found: error
+
+  release:
+    name: 'Release'
+
+    needs: [build]
+
+    runs-on: ubuntu-latest
+
+    if: ${{ startsWith(github.ref, 'refs/tags/') }}
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
+
+      - name: Create Release
+        uses: ncipollo/release-action@v1
+        with:
+          allowUpdates: true
+          removeArtifacts: true
+          omitNameDuringUpdate: true
+          omitBodyDuringUpdate: true
+          artifacts: "godot-angle-static*"
+          artifactErrorsFailBuild: true
