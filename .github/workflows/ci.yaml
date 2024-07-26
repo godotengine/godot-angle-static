@@ -121,15 +121,6 @@ jobs:
           artifact-path-gles: bin/libGLES.windows.arm64.lib
           flags: use_mingw=no arch=arm64
 
-        - name: 🏁 Windows - MSVC arm32
-          platform: windows
-          os: windows-2019
-          artifact-name: godot-angle-static-arm32-msvc-release
-          artifact-path-angle: bin/libANGLE.windows.arm32.lib
-          artifact-path-egl: bin/libEGL.windows.arm32.lib
-          artifact-path-gles: bin/libGLES.windows.arm32.lib
-          flags: use_mingw=no arch=arm32
-
         # MinGW/GCC libs using MSVCRT
         - name: 🏁 Windows - MinGW/GCC (MSVCRT) x86_64
           platform: windows
