@@ -799,6 +799,7 @@ if env["platform"] == "macos":
     env.Append(CCFLAGS=["-fno-objc-arc", "-fno-objc-msgsend-selector-stubs", "-Wno-unused-command-line-argument"])
 if env["platform"] == "windows":
     env.Append(CPPDEFINES=[("ANGLE_IS_WIN", 1)])
+    env.Append(CPPDEFINES=[("ANGLE_WINDOWS_NO_FUTEX", 1)])
     env.Append(
         CPPDEFINES=[
             (
