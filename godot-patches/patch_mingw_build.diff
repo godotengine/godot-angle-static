@@ -1,5 +1,5 @@
 diff --git a/angle/include/platform/PlatformMethods.h b/angle/include/platform/PlatformMethods.h
-index a3233a2cd5..b4e684842c 100644
+index a3233a2cd..b4e684842 100644
 --- a/angle/include/platform/PlatformMethods.h
 +++ b/angle/include/platform/PlatformMethods.h
 @@ -313,7 +313,7 @@ extern "C" {
@@ -21,7 +21,7 @@ index a3233a2cd5..b4e684842c 100644
  
  namespace angle
 diff --git a/angle/src/libANGLE/renderer/d3d/d3d11/converged/CompositorNativeWindow11.cpp b/angle/src/libANGLE/renderer/d3d/d3d11/converged/CompositorNativeWindow11.cpp
-index 0e64f78d53..17ed63e66c 100644
+index 0e64f78d5..17ed63e66 100644
 --- a/angle/src/libANGLE/renderer/d3d/d3d11/converged/CompositorNativeWindow11.cpp
 +++ b/angle/src/libANGLE/renderer/d3d/d3d11/converged/CompositorNativeWindow11.cpp
 @@ -38,14 +38,22 @@ bool CompositorNativeWindow11::getClientRect(LPRECT rect) const
@@ -48,10 +48,10 @@ index 0e64f78d53..17ed63e66c 100644
      {
          return false;
 diff --git a/angle/src/libANGLE/renderer/d3d/d3d11/converged/CompositorNativeWindow11.h b/angle/src/libANGLE/renderer/d3d/d3d11/converged/CompositorNativeWindow11.h
-index aec331a76c..be98814486 100644
+index aec331a76..4fdf16e1d 100644
 --- a/angle/src/libANGLE/renderer/d3d/d3d11/converged/CompositorNativeWindow11.h
 +++ b/angle/src/libANGLE/renderer/d3d/d3d11/converged/CompositorNativeWindow11.h
-@@ -12,6 +12,143 @@
+@@ -12,6 +12,164 @@
  
  #include "libANGLE/renderer/d3d/d3d11/NativeWindow11.h"
  
@@ -189,6 +189,27 @@ index aec331a76c..be98814486 100644
 +    DirectXPixelFormat_SamplerFeedbackMinMipOpaque = 189,
 +    DirectXPixelFormat_SamplerFeedbackMipRegionUsedOpaque = 190
 +};
++#endif
++
++#ifndef VirtualKeyModifiers
++enum VirtualKeyModifiers {
++    VirtualKeyModifiers_None = 0x0,
++};
++#endif
++
++#ifndef VirtualKey
++enum VirtualKey {
++    VirtualKey_None = 0,
++};
++#endif
++
++#ifndef ABI::Windows::UI::Core::Point
++namespace ABI::Windows::UI::Core {
++    struct Point {
++        FLOAT X;
++        FLOAT Y;
++    };
++}
 +#endif
 +#endif
 +

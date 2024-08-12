@@ -777,6 +777,7 @@ if env["platform"] == "macos":
 if env["platform"] == "windows":
     env.Append(CPPDEFINES=[("ANGLE_IS_WIN", 1)])
     env.Append(CPPDEFINES=[("ANGLE_WINDOWS_NO_FUTEX", 1)])
+    env.Append(CPPDEFINES=[("ANGLE_PLATFORM_EXPORT",'""')])
     env.Append(
         CPPDEFINES=[
             (
