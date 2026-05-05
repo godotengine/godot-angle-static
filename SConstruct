@@ -154,11 +154,11 @@ if unknown:
 
 print("Building for architecture " + env["arch"] + " on platform " + env["platform"])
 
-# Require C++17
+# Require C++20
 if env.get("is_msvc", False):
-    env.Append(CXXFLAGS=["/std:c++17"])
+    env.Append(CXXFLAGS=["/std:c++20"])
 else:
-    env.Append(CXXFLAGS=["-std=c++17"])
+    env.Append(CXXFLAGS=["-std=c++20"])
 
 if env["platform"] == "macos":
     # CPU architecture.
@@ -276,8 +276,6 @@ angle_sources = [
     "angle/src/compiler/translator/Types.cpp",
     "angle/src/compiler/translator/ValidateAST.cpp",
     "angle/src/compiler/translator/ValidateGlobalInitializer.cpp",
-    "angle/src/compiler/translator/ValidateOutputs.cpp",
-    "angle/src/compiler/translator/ValidateTypeSizeLimitations.cpp",
     "angle/src/compiler/translator/ValidateVaryingLocations.cpp",
     "angle/src/compiler/translator/VariablePacker.cpp",
     "angle/src/compiler/translator/blocklayout.cpp",
@@ -292,6 +290,7 @@ angle_sources = [
     "angle/src/compiler/translator/glsl/TranslatorESSL.cpp",
     "angle/src/compiler/translator/glsl/TranslatorGLSL.cpp",
     "angle/src/compiler/translator/glsl/VersionGLSL.cpp",
+    "angle/src/compiler/translator/tree_ops/AddDefaultReturnStatements.cpp",
     "angle/src/compiler/translator/tree_ops/ClampFragDepth.cpp",
     "angle/src/compiler/translator/tree_ops/ClampIndirectIndices.cpp",
     "angle/src/compiler/translator/tree_ops/ClampPointSize.cpp",
@@ -300,6 +299,9 @@ angle_sources = [
     "angle/src/compiler/translator/tree_ops/DeferGlobalInitializers.cpp",
     "angle/src/compiler/translator/tree_ops/EmulateGLFragColorBroadcast.cpp",
     "angle/src/compiler/translator/tree_ops/EmulateMultiDrawShaderBuiltins.cpp",
+    "angle/src/compiler/translator/tree_ops/EnsureLoopForwardProgress.cpp",
+    "angle/src/compiler/translator/tree_ops/ExpandFragmentOutputsToVec4.cpp",
+    "angle/src/compiler/translator/tree_ops/FoldConstantSwitch.cpp",
     "angle/src/compiler/translator/tree_ops/FoldExpressions.cpp",
     "angle/src/compiler/translator/tree_ops/GatherDefaultUniforms.cpp",
     "angle/src/compiler/translator/tree_ops/InitializeVariables.cpp",
@@ -316,7 +318,6 @@ angle_sources = [
     "angle/src/compiler/translator/tree_ops/RemoveInvariantDeclaration.cpp",
     "angle/src/compiler/translator/tree_ops/RemoveUnreferencedVariables.cpp",
     "angle/src/compiler/translator/tree_ops/RemoveUnusedFramebufferFetch.cpp",
-    "angle/src/compiler/translator/tree_ops/RescopeGlobalVariables.cpp",
     "angle/src/compiler/translator/tree_ops/RewriteArrayOfArrayOfOpaqueUniforms.cpp",
     "angle/src/compiler/translator/tree_ops/RewriteAtomicCounters.cpp",
     "angle/src/compiler/translator/tree_ops/RewriteDfdy.cpp",
@@ -325,12 +326,12 @@ angle_sources = [
     "angle/src/compiler/translator/tree_ops/RewriteTexelFetchOffset.cpp",
     "angle/src/compiler/translator/tree_ops/ScalarizeVecAndMatConstructorArgs.cpp",
     "angle/src/compiler/translator/tree_ops/SeparateDeclarations.cpp",
-    "angle/src/compiler/translator/tree_ops/SeparateStructFromUniformDeclarations.cpp",
     "angle/src/compiler/translator/tree_ops/SimplifyLoopConditions.cpp",
     "angle/src/compiler/translator/tree_ops/SplitSequenceOperator.cpp",
-    "angle/src/compiler/translator/tree_ops/glsl/RegenerateStructNames.cpp",
+    "angle/src/compiler/translator/tree_ops/UseGeneratedNamesForAnonymousStructs.cpp",
     "angle/src/compiler/translator/tree_ops/glsl/RewriteRepeatedAssignToSwizzled.cpp",
     "angle/src/compiler/translator/tree_ops/glsl/UseInterfaceBlockFields.cpp",
+    "angle/src/compiler/translator/tree_ops/glsl/WrapStructConstructors.cpp",
     "angle/src/compiler/translator/tree_util/DriverUniform.cpp",
     "angle/src/compiler/translator/tree_util/FindFunction.cpp",
     "angle/src/compiler/translator/tree_util/FindMain.cpp",
@@ -346,7 +347,6 @@ angle_sources = [
     "angle/src/compiler/translator/tree_util/RewriteSampleMaskVariable.cpp",
     "angle/src/compiler/translator/tree_util/RunAtTheBeginningOfShader.cpp",
     "angle/src/compiler/translator/tree_util/RunAtTheEndOfShader.cpp",
-    "angle/src/compiler/translator/tree_util/SpecializationConstant.cpp",
     "angle/src/gpu_info_util/SystemInfo.cpp",
     "angle/src/libANGLE/AttributeMap.cpp",
     "angle/src/libANGLE/BlobCache.cpp",
@@ -377,10 +377,6 @@ angle_sources = [
     "angle/src/libANGLE/MemoryProgramCache.cpp",
     "angle/src/libANGLE/MemoryShaderCache.cpp",
     "angle/src/libANGLE/Observer.cpp",
-    "angle/src/libANGLE/Overlay.cpp",
-    "angle/src/libANGLE/OverlayWidgets.cpp",
-    "angle/src/libANGLE/Overlay_autogen.cpp",
-    "angle/src/libANGLE/Overlay_font_autogen.cpp",
     "angle/src/libANGLE/PixelLocalStorage.cpp",
     "angle/src/libANGLE/Platform.cpp",
     "angle/src/libANGLE/Program.cpp",
@@ -450,7 +446,7 @@ angle_sources = [
     "angle/src/image_util/loadimage_paletted.cpp",
     "angle/src/image_util/loadimage.cpp",
     "angle/src/image_util/storeimage_paletted.cpp",
-    "angle/src/common/third_party/xxhash/xxhash.c",
+    "angle/src/common/third_party/xxhash/src/xxhash.c",
     "third_party/zlib/google/compression_utils_portable.cc",
     "third_party/zlib/adler32.c",
     "third_party/zlib/compress.c",
@@ -469,20 +465,35 @@ angle_sources = [
     "third_party/zlib/trees.c",
     "third_party/zlib/uncompr.c",
     "third_party/zlib/zutil.c",
+    "third_party/astc-encoder/src/Source/astcenc_averages_and_directions.cpp",
+    "third_party/astc-encoder/src/Source/astcenc_block_sizes.cpp",
+    "third_party/astc-encoder/src/Source/astcenc_color_quantize.cpp",
+    "third_party/astc-encoder/src/Source/astcenc_color_unquantize.cpp",
+    "third_party/astc-encoder/src/Source/astcenc_compress_symbolic.cpp",
+    "third_party/astc-encoder/src/Source/astcenc_compute_variance.cpp",
+    "third_party/astc-encoder/src/Source/astcenc_decompress_symbolic.cpp",
+    "third_party/astc-encoder/src/Source/astcenc_diagnostic_trace.cpp",
+    "third_party/astc-encoder/src/Source/astcenc_entry.cpp",
+    "third_party/astc-encoder/src/Source/astcenc_find_best_partitioning.cpp",
+    "third_party/astc-encoder/src/Source/astcenc_ideal_endpoints_and_weights.cpp",
+    "third_party/astc-encoder/src/Source/astcenc_image.cpp",
+    "third_party/astc-encoder/src/Source/astcenc_integer_sequence.cpp",
+    "third_party/astc-encoder/src/Source/astcenc_mathlib_softfloat.cpp",
+    "third_party/astc-encoder/src/Source/astcenc_mathlib.cpp",
+    "third_party/astc-encoder/src/Source/astcenc_partition_tables.cpp",
+    "third_party/astc-encoder/src/Source/astcenc_percentile_tables.cpp",
+    "third_party/astc-encoder/src/Source/astcenc_pick_best_endpoint_format.cpp",
+    "third_party/astc-encoder/src/Source/astcenc_quantization.cpp",
+    "third_party/astc-encoder/src/Source/astcenc_symbolic_physical.cpp",
+    "third_party/astc-encoder/src/Source/astcenc_weight_align.cpp",
+    "third_party/astc-encoder/src/Source/astcenc_weight_quant_xfer_tables.cpp",
 ]
 if env["platform"] == "macos":
     angle_sources += [
         "angle/src/common/system_utils_apple.cpp",
         "angle/src/common/system_utils_mac.cpp",
         "angle/src/gpu_info_util/SystemInfo_macos.mm",
-        "angle/src/common/gl/cgl/FunctionsCGL.cpp",
         "angle/src/libANGLE/renderer/driver_utils_mac.mm",
-        "angle/src/libANGLE/renderer/gl/cgl/ContextCGL.cpp",
-        "angle/src/libANGLE/renderer/gl/cgl/DeviceCGL.cpp",
-        "angle/src/libANGLE/renderer/gl/cgl/DisplayCGL.mm",
-        "angle/src/libANGLE/renderer/gl/cgl/IOSurfaceSurfaceCGL.cpp",
-        "angle/src/libANGLE/renderer/gl/cgl/PbufferSurfaceCGL.cpp",
-        "angle/src/libANGLE/renderer/gl/cgl/WindowSurfaceCGL.mm",
     ]
 if env["platform"] == "ios":
     angle_sources += [
@@ -517,11 +528,11 @@ if env["platform"] == "macos" or env["platform"] == "ios":
         "angle/src/compiler/translator/tree_ops/glsl/apple/UnfoldShortCircuitAST.cpp",
         "angle/src/compiler/translator/tree_ops/msl/AddExplicitTypeCasts.cpp",
         "angle/src/compiler/translator/tree_ops/msl/ConvertUnsupportedConstructorsToFunctionCalls.cpp",
-        "angle/src/compiler/translator/tree_ops/msl/EnsureLoopForwardProgress.cpp",
         "angle/src/compiler/translator/tree_ops/msl/FixTypeConstructors.cpp",
         "angle/src/compiler/translator/tree_ops/msl/GuardFragDepthWrite.cpp",
         "angle/src/compiler/translator/tree_ops/msl/HoistConstants.cpp",
         "angle/src/compiler/translator/tree_ops/msl/IntroduceVertexIndexID.cpp",
+        "angle/src/compiler/translator/tree_ops/msl/RescopeGlobalVariables.cpp",
         "angle/src/compiler/translator/tree_ops/msl/RewriteCaseDeclarations.cpp",
         "angle/src/compiler/translator/tree_ops/msl/RewriteInterpolants.cpp",
         "angle/src/compiler/translator/tree_ops/msl/RewriteOutArgs.cpp",
@@ -596,7 +607,6 @@ if env["platform"] == "macos" or env["platform"] == "ios":
         "angle/src/libANGLE/renderer/gl/TransformFeedbackGL.cpp",
         "angle/src/libANGLE/renderer/gl/VertexArrayGL.cpp",
         "angle/src/libANGLE/renderer/gl/formatutilsgl.cpp",
-        "angle/src/libANGLE/renderer/gl/null_functions.cpp",
         "angle/src/libANGLE/renderer/gl/renderergl_utils.cpp",
     ]
 if env["platform"] == "windows":
@@ -614,7 +624,6 @@ if env["platform"] == "windows":
         "angle/src/compiler/translator/hlsl/UtilsHLSL.cpp",
         "angle/src/compiler/translator/hlsl/blocklayoutHLSL.cpp",
         "angle/src/compiler/translator/hlsl/emulated_builtin_functions_hlsl_autogen.cpp",
-        "angle/src/compiler/translator/tree_ops/hlsl/AddDefaultReturnStatements.cpp",
         "angle/src/compiler/translator/tree_ops/hlsl/ArrayReturnValueToOutParameter.cpp",
         "angle/src/compiler/translator/tree_ops/hlsl/BreakVariableAliasingInInnerLoops.cpp",
         "angle/src/compiler/translator/tree_ops/hlsl/ExpandIntegerPowExpressions.cpp",
@@ -628,7 +637,6 @@ if env["platform"] == "windows":
         "angle/src/compiler/translator/tree_ops/hlsl/UnfoldShortCircuitToIf.cpp",
         "angle/src/compiler/translator/tree_ops/hlsl/WrapSwitchStatementsInBlocks.cpp",
         "angle/src/gpu_info_util/SystemInfo_win.cpp",
-        "angle/src/libANGLE/renderer/d3d_format.cpp",
         "angle/src/libANGLE/renderer/dxgi_format_map_autogen.cpp",
         "angle/src/libANGLE/renderer/dxgi_support_table_autogen.cpp",
         "angle/src/libANGLE/renderer/d3d/BufferD3D.cpp",
@@ -668,7 +676,6 @@ if env["platform"] == "windows":
         "angle/src/libANGLE/renderer/d3d/d3d11/Image11.cpp",
         "angle/src/libANGLE/renderer/d3d/d3d11/IndexBuffer11.cpp",
         "angle/src/libANGLE/renderer/d3d/d3d11/InputLayoutCache.cpp",
-        "angle/src/libANGLE/renderer/d3d/d3d11/MappedSubresourceVerifier11.cpp",
         "angle/src/libANGLE/renderer/d3d/d3d11/PixelTransfer11.cpp",
         "angle/src/libANGLE/renderer/d3d/d3d11/Program11.cpp",
         "angle/src/libANGLE/renderer/d3d/d3d11/ProgramPipeline11.cpp",
@@ -727,10 +734,6 @@ if env["platform"] == "macos":
     env.Append(CPPDEFINES=["ANGLE_PLATFORM_MACOS"])
     env.Append(CPPDEFINES=[("ANGLE_IS_MAC", 1)])
     env.Append(CPPDEFINES=[("ANGLE_ENABLE_METAL", 1)])
-    env.Append(CPPDEFINES=[("ANGLE_ENABLE_OPENGL", 1)])
-    env.Append(CPPDEFINES=[("ANGLE_ENABLE_GL_DESKTOP_BACKEND", 1)])
-    env.Append(CPPDEFINES=[("ANGLE_ENABLE_GL_NULL", 1)])
-    env.Append(CPPDEFINES=[("ANGLE_ENABLE_CGL", 1)])
     env.Append(CCFLAGS=["-fno-objc-arc", "-fno-objc-msgsend-selector-stubs", "-Wno-unused-command-line-argument"])
 if env["platform"] == "windows":
     env.Append(CPPDEFINES=[("ANGLE_IS_WIN", 1)])
@@ -756,9 +759,6 @@ if env["platform"] == "ios":
     else:
         env.Append(CPPDEFINES=["ANGLE_PLATFORM_IOS_FAMILY_SIMULATOR"])
     env.Append(CPPDEFINES=[("ANGLE_ENABLE_METAL", 1)])
-    env.Append(CPPDEFINES=[("ANGLE_ENABLE_GL_NULL", 1)])
-    env.Append(CPPDEFINES=[("ANGLE_ENABLE_EAGL", 1)])
-    env.Append(CPPDEFINES=[("GLES_SILENCE_DEPRECATION", 1)])
     env.Append(CCFLAGS=["-fno-objc-arc", "-fno-objc-msgsend-selector-stubs", "-Wno-unused-command-line-argument"])
 
 env.Append(CPPDEFINES=[("ANGLE_STANDALONE_BUILD", 1)])
@@ -776,6 +776,7 @@ env.Prepend(CPPPATH=["angle/include/KHR"])
 env.Prepend(CPPPATH=["angle/src/common/third_party/base"])
 env.Prepend(CPPPATH=["angle/src/common/base"])
 env.Prepend(CPPPATH=["angle/src/common/third_party/xxhash"])
+env.Prepend(CPPPATH=["angle/src/common/third_party/xxhash/src"])
 env.Prepend(CPPPATH=["angle/src/third_party/khronos"])
 env.Prepend(CPPPATH=["third_party/astc-encoder/src/Source"])
 env.Prepend(CPPPATH=["third_party/zlib"])
