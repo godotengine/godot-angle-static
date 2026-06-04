@@ -63,7 +63,7 @@ jobs:
           flags: arch=arm64
 
         # MinGW/LLVM libs using UCRT
-        - name: 🏁 Windows - MinGW/LLVM (UCRT) x86_64
+        - name: 🏁 Windows - MinGW/LLVM 21.1.6 (UCRT) x86_64
           platform: windows
           os: windows-2025
           artifact-name: godot-angle-static-x86_64-llvm-release
@@ -71,9 +71,10 @@ jobs:
           artifact-path-egl: bin/libEGL.windows.x86_64.a
           artifact-path-gles: bin/libGLES.windows.x86_64.a
           flags: use_mingw=yes arch=x86_64 use_llvm=yes mingw_prefix=$HOME/llvm-mingw
+          mingw_version: 20251118/llvm-mingw-20251118-ucrt-x86_64
           llvm: yes
 
-        - name: 🏁 Windows - MinGW/LLVM (UCRT) x86_32
+        - name: 🏁 Windows - MinGW/LLVM 21.1.6 (UCRT) x86_32
           platform: windows
           os: windows-2025
           artifact-name: godot-angle-static-x86_32-llvm-release
@@ -81,9 +82,10 @@ jobs:
           artifact-path-egl: bin/libEGL.windows.x86_32.a
           artifact-path-gles: bin/libGLES.windows.x86_32.a
           flags: use_mingw=yes arch=x86_32 use_llvm=yes mingw_prefix=$HOME/llvm-mingw
+          mingw_version: 20251118/llvm-mingw-20251118-ucrt-x86_64
           llvm: yes
 
-        - name: 🏁 Windows - MinGW/LLVM (UCRT) arm64
+        - name: 🏁 Windows - MinGW/LLVM 21.1.6 (UCRT) arm64
           platform: windows
           os: windows-2025
           artifact-name: godot-angle-static-arm64-llvm-release
@@ -91,6 +93,7 @@ jobs:
           artifact-path-egl: bin/libEGL.windows.arm64.a
           artifact-path-gles: bin/libGLES.windows.arm64.a
           flags: use_mingw=yes arch=arm64 use_llvm=yes mingw_prefix=$HOME/llvm-mingw
+          mingw_version: 20251118/llvm-mingw-20251118-ucrt-x86_64
           llvm: yes
 
         # MSVC libs
@@ -121,55 +124,74 @@ jobs:
           artifact-path-gles: bin/libGLES.windows.arm64.lib
           flags: use_mingw=no arch=arm64
 
-        # MinGW/GCC libs using MSVCRT (MinGW 15 / CRT 13)
-        - name: 🏁 Windows - MinGW/GCC (MSVCRT) x86_64
+        # MinGW/GCC libs using UCRT
+        - name: 🏁 Windows - MinGW/GCC 15.2 (UCRT) x86_64
           platform: windows
           os: windows-2025
-          artifact-name: godot-angle-static-x86_64-gcc-13-release
+          artifact-name: godot-angle-static-x86_64-gcc-ucrt-release
           artifact-path-angle: bin/libANGLE.windows.x86_64.a
           artifact-path-egl: bin/libEGL.windows.x86_64.a
           artifact-path-gles: bin/libGLES.windows.x86_64.a
-          flags: use_mingw=yes arch=x86_64 mingw_prefix=C:/mingw64
+          flags: use_mingw=yes arch=x86_64 mingw_prefix=$HOME/gcc-mingw
+          mingw_version: 15.2.0posix-14.0.0-ucrt-r7/winlibs-x86_64-posix-seh-gcc-15.2.0-mingw-w64ucrt-14.0.0-r7
           mingw: yes
-          msys: mingw64
-          msysenv: x86_64
 
-        - name: 🏁 Windows - MinGW/GCC (MSVCRT) x86_32
+        - name: 🏁 Windows - MinGW/GCC 15.2 (UCRT) x86_32
           platform: windows
           os: windows-2025
-          artifact-name: godot-angle-static-x86_32-gcc-13-release
+          artifact-name: godot-angle-static-x86_32-gcc-ucrt-release
           artifact-path-angle: bin/libANGLE.windows.x86_32.a
           artifact-path-egl: bin/libEGL.windows.x86_32.a
           artifact-path-gles: bin/libGLES.windows.x86_32.a
-          flags: use_mingw=yes arch=x86_32 mingw_prefix=C:/mingw32
+          flags: use_mingw=yes arch=x86_32 mingw_prefix=$HOME/gcc-mingw
+          mingw_version: 15.2.0posix-14.0.0-ucrt-r7/winlibs-i686-posix-dwarf-gcc-15.2.0-mingw-w64ucrt-14.0.0-r7
           mingw: yes
-          msys: mingw32
-          msysenv: i686
 
-        # MinGW/GCC libs using MSVCRT (MinGW 14 / CRT 12)
-        - name: 🏁 Windows - MinGW/GCC (MSVCRT) x86_64
+        # MinGW/GCC libs using MSVCRT (MinGW 15 / CRT 14)
+        - name: 🏁 Windows - MinGW/GCC 15.2 (MSVCRT) x86_64
           platform: windows
-          os: windows-2022
+          os: windows-2025
           artifact-name: godot-angle-static-x86_64-gcc-release
           artifact-path-angle: bin/libANGLE.windows.x86_64.a
           artifact-path-egl: bin/libEGL.windows.x86_64.a
           artifact-path-gles: bin/libGLES.windows.x86_64.a
-          flags: use_mingw=yes arch=x86_64 mingw_prefix=C:/mingw64
+          flags: use_mingw=yes arch=x86_64 mingw_prefix=$HOME/gcc-mingw
+          mingw_version: 15.2.0posix-14.0.0-msvcrt-r7/winlibs-x86_64-posix-seh-gcc-15.2.0-mingw-w64msvcrt-14.0.0-r7
           mingw: yes
-          msys: mingw64
-          msysenv: x86_64
 
-        - name: 🏁 Windows - MinGW/GCC (MSVCRT) x86_32
+        - name: 🏁 Windows - MinGW/GCC 15.2 (MSVCRT) x86_32
           platform: windows
-          os: windows-2022
+          os: windows-2025
           artifact-name: godot-angle-static-x86_32-gcc-release
           artifact-path-angle: bin/libANGLE.windows.x86_32.a
           artifact-path-egl: bin/libEGL.windows.x86_32.a
           artifact-path-gles: bin/libGLES.windows.x86_32.a
-          flags: use_mingw=yes arch=x86_32 mingw_prefix=C:/mingw32
+          flags: use_mingw=yes arch=x86_32 mingw_prefix=$HOME/gcc-mingw
+          mingw_version: 15.2.0posix-14.0.0-msvcrt-r7/winlibs-i686-posix-dwarf-gcc-15.2.0-mingw-w64msvcrt-14.0.0-r7
           mingw: yes
-          msys: mingw32
-          msysenv: i686
+
+        # MinGW/GCC libs using MSVCRT (MinGW 14 / CRT 12)
+        - name: 🏁 Windows - MinGW/GCC 14.2 (MSVCRT) x86_64
+          platform: windows
+          os: windows-2025
+          artifact-name: godot-angle-static-x86_64-gcc-crt12-release
+          artifact-path-angle: bin/libANGLE.windows.x86_64.a
+          artifact-path-egl: bin/libEGL.windows.x86_64.a
+          artifact-path-gles: bin/libGLES.windows.x86_64.a
+          flags: use_mingw=yes arch=x86_64 mingw_prefix=$HOME/gcc-mingw
+          mingw_version: 14.2.0posix-19.1.7-12.0.0-msvcrt-r3/winlibs-x86_64-posix-seh-gcc-14.2.0-mingw-w64msvcrt-12.0.0-r3
+          mingw: yes
+
+        - name: 🏁 Windows - MinGW/GCC 14.2 (MSVCRT) x86_32
+          platform: windows
+          os: windows-2025
+          artifact-name: godot-angle-static-x86_32-gcc-crt12-release
+          artifact-path-angle: bin/libANGLE.windows.x86_32.a
+          artifact-path-egl: bin/libEGL.windows.x86_32.a
+          artifact-path-gles: bin/libGLES.windows.x86_32.a
+          flags: use_mingw=yes arch=x86_32 mingw_prefix=$HOME/gcc-mingw
+          mingw_version: 14.2.0posix-19.1.7-12.0.0-msvcrt-r3/winlibs-i686-posix-dwarf-gcc-14.2.0-mingw-w64msvcrt-12.0.0-r3
+          mingw: yes
   
     runs-on: ${{ matrix.os }}
 
@@ -177,12 +199,12 @@ jobs:
       XCODE_DEV_PATH: "/Applications/Xcode_${{ matrix.xcode }}.app/Contents/Developer"
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           submodules: 'true'
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: '3.x'
 
@@ -201,17 +223,20 @@ jobs:
       - name: Setup MinGW/LLVM
         if: ${{ matrix.platform == 'windows' && matrix.llvm == 'yes' }}
         run: |
-          curl -L -O https://github.com/mstorsjo/llvm-mingw/releases/download/20250114/llvm-mingw-20250114-ucrt-x86_64.zip
+          curl -L -O https://github.com/mstorsjo/llvm-mingw/releases/download/${{matrix.mingw_version}}.zip
           unzip -q llvm-mingw-*.zip
           rm llvm-mingw-*.zip
           mv llvm-mingw-* "$HOME/llvm-mingw"
           echo "$HOME/llvm-mingw/bin" >> $GITHUB_PATH
 
-      - name: Setup MinGW path
-        if: ${{ matrix.mingw == 'yes' }}
-        shell: bash
+      - name: Setup MinGW/GCC
+        if: ${{ matrix.platform == 'windows' && matrix.mingw == 'yes' }}
         run: |
-          echo "C:/mingw32/bin" >> $GITHUB_PATH
+          curl -L -O https://github.com/brechtsanders/winlibs_mingw/releases/download/${{matrix.mingw_version}}.zip
+          unzip -q winlibs-*.zip
+          rm winlibs-*.zip
+          mv mingw* "$HOME/gcc-mingw"
+          echo "$HOME/gcc-mingw/bin" >> $GITHUB_PATH
 
       - name: Prepare ANGLE source
         shell: bash
@@ -223,7 +248,7 @@ jobs:
           scons platform=${{ matrix.platform }} ${{ matrix.flags }} optimize=speed
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.artifact-name }}
           path: |
@@ -246,7 +271,7 @@ jobs:
 
     steps:
       - name: Download Artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
 
       - name: ZIP Artifacts
         run: |

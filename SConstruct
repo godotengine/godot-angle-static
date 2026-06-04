@@ -156,7 +156,7 @@ print("Building for architecture " + env["arch"] + " on platform " + env["platfo
 
 # Require C++17
 if env.get("is_msvc", False):
-    env.Append(CXXFLAGS=["/std:c++17"])
+    env.Append(CXXFLAGS=["/std:c++20"])
 else:
     env.Append(CXXFLAGS=["-std=c++17"])
 
@@ -276,8 +276,6 @@ angle_sources = [
     "angle/src/compiler/translator/Types.cpp",
     "angle/src/compiler/translator/ValidateAST.cpp",
     "angle/src/compiler/translator/ValidateGlobalInitializer.cpp",
-    "angle/src/compiler/translator/ValidateOutputs.cpp",
-    "angle/src/compiler/translator/ValidateTypeSizeLimitations.cpp",
     "angle/src/compiler/translator/ValidateVaryingLocations.cpp",
     "angle/src/compiler/translator/VariablePacker.cpp",
     "angle/src/compiler/translator/blocklayout.cpp",
@@ -316,7 +314,6 @@ angle_sources = [
     "angle/src/compiler/translator/tree_ops/RemoveInvariantDeclaration.cpp",
     "angle/src/compiler/translator/tree_ops/RemoveUnreferencedVariables.cpp",
     "angle/src/compiler/translator/tree_ops/RemoveUnusedFramebufferFetch.cpp",
-    "angle/src/compiler/translator/tree_ops/RescopeGlobalVariables.cpp",
     "angle/src/compiler/translator/tree_ops/RewriteArrayOfArrayOfOpaqueUniforms.cpp",
     "angle/src/compiler/translator/tree_ops/RewriteAtomicCounters.cpp",
     "angle/src/compiler/translator/tree_ops/RewriteDfdy.cpp",
@@ -475,14 +472,7 @@ if env["platform"] == "macos":
         "angle/src/common/system_utils_apple.cpp",
         "angle/src/common/system_utils_mac.cpp",
         "angle/src/gpu_info_util/SystemInfo_macos.mm",
-        "angle/src/common/gl/cgl/FunctionsCGL.cpp",
         "angle/src/libANGLE/renderer/driver_utils_mac.mm",
-        "angle/src/libANGLE/renderer/gl/cgl/ContextCGL.cpp",
-        "angle/src/libANGLE/renderer/gl/cgl/DeviceCGL.cpp",
-        "angle/src/libANGLE/renderer/gl/cgl/DisplayCGL.mm",
-        "angle/src/libANGLE/renderer/gl/cgl/IOSurfaceSurfaceCGL.cpp",
-        "angle/src/libANGLE/renderer/gl/cgl/PbufferSurfaceCGL.cpp",
-        "angle/src/libANGLE/renderer/gl/cgl/WindowSurfaceCGL.mm",
     ]
 if env["platform"] == "ios":
     angle_sources += [
@@ -522,6 +512,7 @@ if env["platform"] == "macos" or env["platform"] == "ios":
         "angle/src/compiler/translator/tree_ops/msl/GuardFragDepthWrite.cpp",
         "angle/src/compiler/translator/tree_ops/msl/HoistConstants.cpp",
         "angle/src/compiler/translator/tree_ops/msl/IntroduceVertexIndexID.cpp",
+        "angle/src/compiler/translator/tree_ops/msl/RescopeGlobalVariables.cpp",
         "angle/src/compiler/translator/tree_ops/msl/RewriteCaseDeclarations.cpp",
         "angle/src/compiler/translator/tree_ops/msl/RewriteInterpolants.cpp",
         "angle/src/compiler/translator/tree_ops/msl/RewriteOutArgs.cpp",
@@ -596,7 +587,6 @@ if env["platform"] == "macos" or env["platform"] == "ios":
         "angle/src/libANGLE/renderer/gl/TransformFeedbackGL.cpp",
         "angle/src/libANGLE/renderer/gl/VertexArrayGL.cpp",
         "angle/src/libANGLE/renderer/gl/formatutilsgl.cpp",
-        "angle/src/libANGLE/renderer/gl/null_functions.cpp",
         "angle/src/libANGLE/renderer/gl/renderergl_utils.cpp",
     ]
 if env["platform"] == "windows":
@@ -727,10 +717,6 @@ if env["platform"] == "macos":
     env.Append(CPPDEFINES=["ANGLE_PLATFORM_MACOS"])
     env.Append(CPPDEFINES=[("ANGLE_IS_MAC", 1)])
     env.Append(CPPDEFINES=[("ANGLE_ENABLE_METAL", 1)])
-    env.Append(CPPDEFINES=[("ANGLE_ENABLE_OPENGL", 1)])
-    env.Append(CPPDEFINES=[("ANGLE_ENABLE_GL_DESKTOP_BACKEND", 1)])
-    env.Append(CPPDEFINES=[("ANGLE_ENABLE_GL_NULL", 1)])
-    env.Append(CPPDEFINES=[("ANGLE_ENABLE_CGL", 1)])
     env.Append(CCFLAGS=["-fno-objc-arc", "-fno-objc-msgsend-selector-stubs", "-Wno-unused-command-line-argument"])
 if env["platform"] == "windows":
     env.Append(CPPDEFINES=[("ANGLE_IS_WIN", 1)])
@@ -756,9 +742,6 @@ if env["platform"] == "ios":
     else:
         env.Append(CPPDEFINES=["ANGLE_PLATFORM_IOS_FAMILY_SIMULATOR"])
     env.Append(CPPDEFINES=[("ANGLE_ENABLE_METAL", 1)])
-    env.Append(CPPDEFINES=[("ANGLE_ENABLE_GL_NULL", 1)])
-    env.Append(CPPDEFINES=[("ANGLE_ENABLE_EAGL", 1)])
-    env.Append(CPPDEFINES=[("GLES_SILENCE_DEPRECATION", 1)])
     env.Append(CCFLAGS=["-fno-objc-arc", "-fno-objc-msgsend-selector-stubs", "-Wno-unused-command-line-argument"])
 
 env.Append(CPPDEFINES=[("ANGLE_STANDALONE_BUILD", 1)])

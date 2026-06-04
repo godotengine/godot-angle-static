@@ -2,7 +2,8 @@ diff --git a/angle/include/platform/PlatformMethods.h b/angle/include/platform/P
 index a3233a2cd5..b4e684842c 100644
 --- a/angle/include/platform/PlatformMethods.h
 +++ b/angle/include/platform/PlatformMethods.h
-@@ -313,7 +313,7 @@ extern "C" {
+@@ -312,17 +312,17 @@ extern "C" {
+ // match the compiled signature for this ANGLE, false is returned. On success true is returned.
  // The application should set any platform methods it cares about on the returned pointer.
  // If display is not valid, behaviour is undefined.
  
@@ -11,7 +12,7 @@ index a3233a2cd5..b4e684842c 100644
                                                                    const char *const methodNames[],
                                                                    unsigned int methodNameCount,
                                                                    void *context,
-@@ -321,7 +321,7 @@ ANGLE_PLATFORM_EXPORT bool ANGLE_APIENTRY ANGLEGetDisplayPlatform(angle::EGLDisp
+                                                                   void *platformMethodsOut);
  
  // Sets the platform methods back to their defaults.
  // If display is not valid, behaviour is undefined.
@@ -20,11 +21,24 @@ index a3233a2cd5..b4e684842c 100644
  }  // extern "C"
  
  namespace angle
+ {
 diff --git a/angle/src/libANGLE/renderer/d3d/d3d11/converged/CompositorNativeWindow11.cpp b/angle/src/libANGLE/renderer/d3d/d3d11/converged/CompositorNativeWindow11.cpp
-index 0e64f78d53..17ed63e66c 100644
+index df34085649..bcb178518d 100644
 --- a/angle/src/libANGLE/renderer/d3d/d3d11/converged/CompositorNativeWindow11.cpp
 +++ b/angle/src/libANGLE/renderer/d3d/d3d11/converged/CompositorNativeWindow11.cpp
-@@ -38,14 +38,22 @@ bool CompositorNativeWindow11::getClientRect(LPRECT rect) const
+@@ -6,8 +6,10 @@
+ 
+ // CompositorNativeWindow11.cpp: Implementation of NativeWindow11 using Windows.UI.Composition APIs
+ // which work in both Win32 and WinRT contexts.
+ 
++#define ____FIReference_1_boolean_INTERFACE_DEFINED__
++
+ #include "libANGLE/renderer/d3d/d3d11/converged/CompositorNativeWindow11.h"
+ #include "libANGLE/renderer/d3d/d3d11/renderer11_utils.h"
+ 
+ #include "common/debug.h"
+@@ -37,16 +39,24 @@ bool CompositorNativeWindow11::getClientRect(LPRECT rect) const
+     ComPtr<ABI::Windows::UI::Composition::IVisual> visual;
      mHostVisual.As(&visual);
  
      ABI::Windows::Foundation::Numerics::Vector2 size;
@@ -47,11 +61,13 @@ index 0e64f78d53..17ed63e66c 100644
      if (FAILED(hr))
      {
          return false;
+     }
 diff --git a/angle/src/libANGLE/renderer/d3d/d3d11/converged/CompositorNativeWindow11.h b/angle/src/libANGLE/renderer/d3d/d3d11/converged/CompositorNativeWindow11.h
-index 688f937724..8f3232cc72 100644
+index 688f937724..7c1d6189d2 100644
 --- a/angle/src/libANGLE/renderer/d3d/d3d11/converged/CompositorNativeWindow11.h
 +++ b/angle/src/libANGLE/renderer/d3d/d3d11/converged/CompositorNativeWindow11.h
-@@ -12,6 +12,147 @@
+@@ -11,8 +11,149 @@
+ #define LIBANGLE_RENDERER_D3D_D3D11_CONVERGED_COMPOSITORNATIVEWINDOW11_H_
  
  #include "libANGLE/renderer/d3d/d3d11/NativeWindow11.h"
  
@@ -199,3 +215,19 @@ index 688f937724..8f3232cc72 100644
  #include <DispatcherQueue.h>
  #include <windows.foundation.metadata.h>
  #include <windows.ui.composition.h>
+ #include <windows.ui.composition.interop.h>
+diff --git a/angle/src/libANGLE/renderer/d3d/d3d11/Renderer11.cpp b/angle/src/libANGLE/renderer/d3d/d3d11/Renderer11.cpp
+index a24fbc52f7..3f406c5a0e 100644
+--- a/angle/src/libANGLE/renderer/d3d/d3d11/Renderer11.cpp
++++ b/angle/src/libANGLE/renderer/d3d/d3d11/Renderer11.cpp
+@@ -5,8 +5,10 @@
+ //
+ 
+ // Renderer11.cpp: Implements a back-end specific class for the D3D11 renderer.
+ 
++#define ____FIReference_1_boolean_INTERFACE_DEFINED__
++
+ #ifdef UNSAFE_BUFFERS_BUILD
+ #    pragma allow_unsafe_buffers
+ #endif
+ 
