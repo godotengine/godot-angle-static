@@ -1,0 +1,18 @@
+diff --git a/angle/src/gpu_info_util/SystemInfo_macos.mm b/angle/src/gpu_info_util/SystemInfo_macos.mm
+index 40c5ec93cc..26de8262ef 100644
+--- a/angle/src/gpu_info_util/SystemInfo_macos.mm
++++ b/angle/src/gpu_info_util/SystemInfo_macos.mm
+@@ -18,8 +18,13 @@
+ #if ANGLE_ENABLE_CGL
+ #    include "common/gl/cgl/FunctionsCGL.h"
+ #endif
+ 
++#include <AvailabilityMacros.h>
++#if MAC_OS_X_VERSION_MIN_REQUIRED < 120000
++#define kIOMainPortDefault kIOMasterPortDefault
++#endif
++
+ namespace angle
+ {
+ 
+ namespace

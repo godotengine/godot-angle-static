@@ -1,39 +1,45 @@
 diff --git a/angle/src/libANGLE/renderer/metal/ProgramExecutableMtl.mm b/angle/src/libANGLE/renderer/metal/ProgramExecutableMtl.mm
-index 04fc45023..b2a4f3f96 100644
+index 189e2a6e25..9da1361f39 100644
 --- a/angle/src/libANGLE/renderer/metal/ProgramExecutableMtl.mm
 +++ b/angle/src/libANGLE/renderer/metal/ProgramExecutableMtl.mm
-@@ -248,7 +248,7 @@ void InitArgumentBufferEncoder(mtl::Context *context,
-     if (encoder->metalArgBufferEncoder)
+@@ -262,9 +262,9 @@ void InitArgumentBufferEncoder(mtl::Context *context,
      {
-         encoder->bufferPool.initialize(context, encoder->metalArgBufferEncoder.get().encodedLength,
--                                       mtl::kArgumentBufferOffsetAlignment, 0);
-+                                       mtl::kArgumentBufferOffsetAlignment, 10);
+         const NSUInteger encodedLength      = encoder->metalArgBufferEncoder.get().encodedLength;
+         constexpr size_t kArgBufferPoolSize = 64 * 1024;
+         const size_t poolSize = std::max(static_cast<size_t>(encodedLength), kArgBufferPoolSize);
+-        encoder->bufferPool.initialize(context, poolSize, mtl::kArgumentBufferOffsetAlignment, 0);
++        encoder->bufferPool.initialize(context, poolSize, mtl::kArgumentBufferOffsetAlignment, 10);
      }
  }
  
+ template <typename T>
 diff --git a/angle/src/libANGLE/renderer/metal/ProvokingVertexHelper.mm b/angle/src/libANGLE/renderer/metal/ProvokingVertexHelper.mm
-index 3c3b47be1..0a186b63a 100644
+index b86a49e00f..41facc38a2 100644
 --- a/angle/src/libANGLE/renderer/metal/ProvokingVertexHelper.mm
 +++ b/angle/src/libANGLE/renderer/metal/ProvokingVertexHelper.mm
-@@ -101,7 +101,7 @@ static inline gl::PrimitiveMode getNewPrimitiveMode(const uint fixIndexBufferKey
+@@ -123,9 +123,9 @@ static inline bool indexCountForPrimCount(const uint fixIndexBufferKey,
+     }
  }
  ProvokingVertexHelper::ProvokingVertexHelper(ContextMtl *context) : mIndexBuffers(false)
  {
--    mIndexBuffers.initialize(context, kInitialIndexBufferSize, mtl::kIndexBufferOffsetAlignment, 0);
-+    mIndexBuffers.initialize(context, kInitialIndexBufferSize, mtl::kIndexBufferOffsetAlignment, 10);
+-    mIndexBuffers.initialize(context, kInitialIndexBufferSize, mtl::kIndexBufferOffsetAlignment, 0,
++    mIndexBuffers.initialize(context, kInitialIndexBufferSize, mtl::kIndexBufferOffsetAlignment, 10,
+                              mtl::TrackBufferInContext::Yes);
  }
  
  void ProvokingVertexHelper::onDestroy(ContextMtl *context)
 diff --git a/angle/src/libANGLE/renderer/metal/VertexArrayMtl.mm b/angle/src/libANGLE/renderer/metal/VertexArrayMtl.mm
-index 1d30b2534..50e894ac3 100644
+index 9c66ebc6e7..b63396d286 100644
 --- a/angle/src/libANGLE/renderer/metal/VertexArrayMtl.mm
 +++ b/angle/src/libANGLE/renderer/metal/VertexArrayMtl.mm
-@@ -198,7 +198,7 @@ VertexArrayMtl::VertexArrayMtl(const gl::VertexArrayState &state, ContextMtl *co
-                                   /** maxBuffers */ 10 * mtl::kMaxVertexAttribs);
+@@ -176,9 +176,9 @@ inline MTLVertexFormat GetCurrentAttribFormat(GLenum type)
+                                   /** maxBuffers */ 10 * mtl::kMaxVertexAttribs,
+                                   mtl::TrackBufferInContext::Yes);
  
      mDynamicIndexData.initialize(context, kDynamicIndexDataSize, mtl::kIndexBufferOffsetAlignment,
--                                 0);
-+                                 10);
+-                                 0, mtl::TrackBufferInContext::Yes);
++                                 10, mtl::TrackBufferInContext::Yes);
  }
  VertexArrayMtl::~VertexArrayMtl() {}
  
+ void VertexArrayMtl::destroy(const gl::Context *context)
