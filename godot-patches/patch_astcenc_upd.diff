@@ -1,0 +1,15 @@
+diff --git a/angle/src/image_util/AstcDecompressor.cpp b/angle/src/image_util/AstcDecompressor.cpp
+index b32affd6dd..7d34ab9b4f 100644
+--- a/angle/src/image_util/AstcDecompressor.cpp
++++ b/angle/src/image_util/AstcDecompressor.cpp
+@@ -57,9 +57,9 @@ AstcencContextUniquePtr MakeDecoderContext(uint32_t blockWidth,
+         return nullptr;
+     }
+ 
+     astcenc_context *context;
+-    *error = astcenc_context_alloc(&config, MaxThreads(), &context);
++    *error = astcenc_context_alloc(&config, MaxThreads(), &context, nullptr);
+     if (*error != ASTCENC_SUCCESS)
+     {
+         return nullptr;
+     }
