@@ -447,25 +447,8 @@ angle_sources = [
     "angle/src/image_util/loadimage.cpp",
     "angle/src/image_util/storeimage_paletted.cpp",
     "angle/src/common/third_party/xxhash/src/xxhash.c",
-    # Note: Modified "zlib" version using "_Cr_z" prefix for exported symbols.
     "third_party/zlib/google/compression_utils_portable.cc",
-    "third_party/zlib/adler32.c",
-    "third_party/zlib/compress.c",
-    "third_party/zlib/cpu_features.c",
-    "third_party/zlib/crc_folding.c",
-    "third_party/zlib/crc32.c",
-    "third_party/zlib/deflate.c",
-    "third_party/zlib/gzclose.c",
-    "third_party/zlib/gzlib.c",
-    "third_party/zlib/gzread.c",
-    "third_party/zlib/gzwrite.c",
-    "third_party/zlib/infback.c",
-    "third_party/zlib/inffast.c",
-    "third_party/zlib/inflate.c",
-    "third_party/zlib/inftrees.c",
-    "third_party/zlib/trees.c",
-    "third_party/zlib/uncompr.c",
-    "third_party/zlib/zutil.c",
+    # Note: Do not include "zlib", it is part of the engine.
     # Note: Do not include "astcenc", it is part of the engine.
 ]
 if env["platform"] == "macos":
@@ -703,6 +686,7 @@ env.Append(CPPDEFINES=[("ANGLE_CAPTURE_ENABLED", 0)])
 env.Append(CPPDEFINES=[("ANGLE_ENABLE_ESSL", 1)])
 env.Append(CPPDEFINES=[("ANGLE_ENABLE_GLSL", 1)])
 env.Append(CPPDEFINES=[("ANGLE_EXPORT", '""')])
+env.Append(CPPDEFINES=[("CHROMIUM_ZLIB_NO_CHROMECONF", 1)])
 
 extra_suffix = ""
 
